@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"log"
@@ -41,6 +42,11 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+	} else {
+		fileDetails, err = CalculateFileDetails(fileName, byteFlag, lineFlag, wordFlag, charFlag)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	fmt.Println(fileDetails)
@@ -56,6 +62,27 @@ func CalculateFileDetails(fileName string, c bool, l bool, w bool, m bool) (*Fil
 
 	if c {
 		fileDetails.byteCount = len(fileBytes)
+	}
+
+	if l {
+		fileDetails.lineCount = bytes.Count(fileBytes, []byte{10})
+	}
+
+	if w {
+		count := 0
+		lines := bytes.Split(fileBytes, []byte{10})
+		//exclude last entry in lines due to splitting on newline creating empty slice at the end
+		for _, line := range lines[:len(lines)-1] {
+			words := bytes.Split(line, []byte{32})
+			fmt.Println(words)
+			count += len(words)
+		}
+
+		fileDetails.wordCount = count
+	}
+
+	if m {
+		fileDetails.charCount = len([]rune(string(fileBytes)))
 	}
 
 	return fileDetails, nil
