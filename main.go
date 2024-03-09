@@ -43,7 +43,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("%d %d %d %s\n", fileDetails.lineCount, fileDetails.wordCount, fileDetails.byteCount, fileName)
+		fmt.Printf("    %d  %d  %d %s\n", fileDetails.lineCount, fileDetails.wordCount, fileDetails.byteCount, fileName)
 	} else {
 		fileDetails, err = CalculateFileDetails(fileName, byteFlag, lineFlag, wordFlag, charFlag)
 		if err != nil {
