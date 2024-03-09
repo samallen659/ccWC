@@ -52,7 +52,23 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(fileDetails)
+	output := "   "
+	if lineFlag {
+		output = fmt.Sprintf("%s  %d", output, fileDetails.lineCount)
+	}
+	if wordFlag {
+		output = fmt.Sprintf("%s  %d", output, fileDetails.wordCount)
+	}
+	if byteFlag {
+		output = fmt.Sprintf("%s  %d", output, fileDetails.byteCount)
+	}
+	if charFlag {
+		output = fmt.Sprintf("%s  %d", output, fileDetails.charCount)
+	}
+
+	output = fmt.Sprintf("%s %s", output, fileName)
+
+	fmt.Println(output)
 }
 
 func CalculateFileDetails(fileName string, c bool, l bool, w bool, m bool) (*FileDetails, error) {
