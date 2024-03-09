@@ -79,6 +79,8 @@ func CalculateFileDetails(fileName string, c bool, l bool, w bool, m bool) (*Fil
 			if len(line) == 0 {
 				continue
 			}
+			line = bytes.Trim(line, " ")
+
 			words := bytes.Split(line, []byte{32})
 			count += len(words)
 		}
