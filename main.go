@@ -38,18 +38,20 @@ func main() {
 	var err error
 	// if no flags set, true for all
 	if !byteFlag && !lineFlag && !wordFlag && !charFlag {
-		fileDetails, err = CalculateFileDetails(fileName, true, true, true, true)
+		fileDetails, err = CalculateFileDetails(fileName, true, true, true, false)
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		fmt.Printf("%d %d %d %s\n", fileDetails.lineCount, fileDetails.wordCount, fileDetails.byteCount, fileName)
 	} else {
 		fileDetails, err = CalculateFileDetails(fileName, byteFlag, lineFlag, wordFlag, charFlag)
 		if err != nil {
 			log.Fatal(err)
 		}
-	}
 
-	fmt.Println(fileDetails)
+		fmt.Println(fileDetails)
+	}
 }
 
 func CalculateFileDetails(fileName string, c bool, l bool, w bool, m bool) (*FileDetails, error) {
@@ -73,8 +75,10 @@ func CalculateFileDetails(fileName string, c bool, l bool, w bool, m bool) (*Fil
 		lines := bytes.Split(fileBytes, []byte{10})
 		//exclude last entry in lines due to splitting on newline creating empty slice at the end
 		for _, line := range lines[:len(lines)-1] {
+			if len(line) == 0 {
+				continue
+			}
 			words := bytes.Split(line, []byte{32})
-			fmt.Println(words)
 			count += len(words)
 		}
 
