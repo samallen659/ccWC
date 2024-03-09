@@ -36,7 +36,7 @@ func main() {
 
 	var fileDetails *FileDetails
 	var err error
-	// if no flags set, true for all
+	// if no flags set, true for all but charCount
 	if !byteFlag && !lineFlag && !wordFlag && !charFlag {
 		fileDetails, err = CalculateFileDetails(fileName, true, true, true, false)
 		if err != nil {
@@ -44,14 +44,15 @@ func main() {
 		}
 
 		fmt.Printf("    %d  %d  %d %s\n", fileDetails.lineCount, fileDetails.wordCount, fileDetails.byteCount, fileName)
-	} else {
-		fileDetails, err = CalculateFileDetails(fileName, byteFlag, lineFlag, wordFlag, charFlag)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fmt.Println(fileDetails)
+		return
 	}
+
+	fileDetails, err = CalculateFileDetails(fileName, byteFlag, lineFlag, wordFlag, charFlag)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(fileDetails)
 }
 
 func CalculateFileDetails(fileName string, c bool, l bool, w bool, m bool) (*FileDetails, error) {
