@@ -92,13 +92,17 @@ func CalculateFileDetails(fileName string, c bool, l bool, w bool, m bool) (*Fil
 		lines := bytes.Split(fileBytes, []byte{10})
 		//exclude last entry in lines due to splitting on newline creating empty slice at the end
 		for _, line := range lines[:len(lines)-1] {
+			line = bytes.Trim(line, " ")
+			line = bytes.Trim(line, "\t")
 			if len(line) == 0 {
 				continue
 			}
-			line = bytes.Trim(line, " ")
 
-			words := bytes.Split(line, []byte{32})
-			count += len(words)
+			spaceSplit := bytes.Split(line, []byte{32})
+			for _, words := range spaceSplit {
+				tabSplit := bytes.Split(words, []byte{9})
+				count += len(tabSplit)
+			}
 		}
 
 		fileDetails.wordCount = count
