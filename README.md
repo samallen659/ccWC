@@ -13,10 +13,10 @@ go build -o ccWC ./main.go
 ### Usage
 
 ccWC is made to follow the basic usage of wc
-  -c    Show byte count of input
-  -l    Show line count of input
-  -m    Show character count of input
-  -w    Show word count of input
+  - c    Show byte count of input
+  - l    Show line count of input
+  - m    Show character count of input
+  - w    Show word count of input
 
 File can be read by providing the file name
 
