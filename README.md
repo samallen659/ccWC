@@ -30,7 +30,7 @@ Or through stdin
 cat file.txt | ./ccWC
 ```
 
-When specifying specific options to count, the flags must be set before the file name in the command
+When specifying options to count, the flags must be set before the file name in the command
 
 ```bash
 ./ccWC -c -l file.txt
