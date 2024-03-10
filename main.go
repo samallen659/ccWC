@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 )
@@ -32,22 +33,42 @@ func main() {
 		log.Fatal("Invalid input")
 	}
 
-	fileName := flag.Args()[0]
+	var fileBytes []byte
+	var fileName string
+	// no filename provided so try to read stdin
+	if len(flag.Args()) == 0 {
+		var err error
+		fileBytes, err = io.ReadAll(os.Stdin)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		fileName = flag.Args()[0]
+		var err error
+		fileBytes, err = os.ReadFile(fileName)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 
 	var fileDetails *FileDetails
 	var err error
 	// if no flags set, true for all but charCount
 	if !byteFlag && !lineFlag && !wordFlag && !charFlag {
-		fileDetails, err = CalculateFileDetails(fileName, true, true, true, false)
+		fileDetails, err = CalculateFileDetails(fileBytes, true, true, true, false)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("    %d  %d  %d %s\n", fileDetails.lineCount, fileDetails.wordCount, fileDetails.byteCount, fileName)
+		if fileName != "" {
+			fmt.Printf("    %d  %d  %d %s\n", fileDetails.lineCount, fileDetails.wordCount, fileDetails.byteCount, fileName)
+			return
+		}
+		fmt.Printf("    %d  %d  %d\n", fileDetails.lineCount, fileDetails.wordCount, fileDetails.byteCount)
 		return
 	}
 
-	fileDetails, err = CalculateFileDetails(fileName, byteFlag, lineFlag, wordFlag, charFlag)
+	fileDetails, err = CalculateFileDetails(fileBytes, byteFlag, lineFlag, wordFlag, charFlag)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -65,19 +86,15 @@ func main() {
 	if charFlag {
 		output = fmt.Sprintf("%s  %d", output, fileDetails.charCount)
 	}
-
-	output = fmt.Sprintf("%s %s", output, fileName)
+	if fileName != "" {
+		output = fmt.Sprintf("%s %s", output, fileName)
+	}
 
 	fmt.Println(output)
 }
 
-func CalculateFileDetails(fileName string, c bool, l bool, w bool, m bool) (*FileDetails, error) {
+func CalculateFileDetails(fileBytes []byte, c bool, l bool, w bool, m bool) (*FileDetails, error) {
 	fileDetails := &FileDetails{}
-
-	fileBytes, err := os.ReadFile(fileName)
-	if err != nil {
-		return nil, err
-	}
 
 	if c {
 		fileDetails.byteCount = len(fileBytes)
